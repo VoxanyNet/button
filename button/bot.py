@@ -1,5 +1,6 @@
 import json
 import time
+import os
 
 import discord
 from discord.ext import tasks
@@ -8,9 +9,19 @@ from button import commands
 from button.utils import format_elapsed_time_short
 
 class ButtonBot(discord.Bot):
+
+    default_button_data = {
+        "last_press": time.time()
+    }
+
     def __init__(self, description=None, *args, **options):
 
         super().__init__(description, *args, **options)
+
+        # create button data file if it doesnt already exist
+        if not os.path.exists("button_data.json"):
+            with open("buttondata.json", "w") as file:
+                json.dump(ButtonBot.default_button_data, file)
 
         with open("buttondata.json", "r") as file:
             data = json.load(file)
