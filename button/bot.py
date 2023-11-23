@@ -23,7 +23,7 @@ class ButtonBot(discord.Bot):
         super().__init__(description, *args, **options)
 
         # create button data file if it doesnt already exist
-        if not os.path.exists("button_data.json"):
+        if not os.path.exists("buttondata.json"):
             with open("buttondata.json", "w") as file:
                 json.dump(ButtonBot.default_button_data, file)
 
