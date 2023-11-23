@@ -1,3 +1,5 @@
+from typing import Dict, List
+
 def format_elapsed_time(seconds):
 
     seconds = int(seconds)
@@ -43,4 +45,22 @@ def format_elapsed_time_short(seconds):
     formatted_time = ', '.join(time_parts)
 
     return formatted_time
+
+def find_one(query: dict, items: List[dict]) -> dict:
+    """Search through a list of dicts and return the first dict with a given value"""
+    
+    for item in items:
+        if item | query:
+            return item 
+    
+    return None
+
+def delete_one(query: dict, items: List[dict]) -> bool:
+    for index, item in enumerate(items.copy()):
+        if item | query:
+           del items[index] 
+
+           return True
+    
+    return False
 

@@ -1,17 +1,21 @@
 import json
 import time
 import os
+from typing import Dict
 
 import discord
 from discord.ext import tasks
 
 from button import commands
 from button.utils import format_elapsed_time_short
+from button import utils
+from button.high_score import HighScore
 
 class ButtonBot(discord.Bot):
 
     default_button_data = {
-        "last_press": time.time()
+        "last_press": time.time(),
+        "high_scores": []
     }
 
     def __init__(self, description=None, *args, **options):
@@ -27,12 +31,57 @@ class ButtonBot(discord.Bot):
             data = json.load(file)
 
         self.last_press: int = data["last_press"]
+        self.high_scores: Dict[HighScore] = data["high_scores"]
 
         self.add_application_command(commands.press)
     
+    def press_button(self) -> float:
+
+        elapsed_time: float = time.time() - self.last_press
+
+        self.last_press: float = time.time()
+
+        return elapsed_time
+
+    async def update_high_score(self, member: discord.Member, score: float) -> bool:
+        """Update high score if member has new high score"""
+
+        query = {
+            "member_id": member.id
+        }
+
+        existing_high_score: HighScore = utils.find_one(query, self.high_scores)
+        
+        if existing_high_score:
+
+            if existing_high_score["high_score"] < score:
+
+                utils.delete_one(query, self.high_scores)
+
+                old_high_score_role = member.guild.get_role(existing_high_score["role_id"])
+                await old_high_score_role.delete()
+            
+            else:
+                return
+        
+        formatted_elapsed_time = utils.format_elapsed_time_short(score)
+
+        new_high_score_role = await member.guild.create_role(name=formatted_elapsed_time)
+
+        await member.add_roles(new_high_score_role)
+
+        self.high_scores.append( 
+            {
+                "member_id": member.id,
+                "role_id": new_high_score_role.id,
+                "high_score": score
+            }
+        )
+
     async def on_ready(self):
         self.update_status.start()
-    
+        self.save_data.start()
+
     @tasks.loop(seconds=5.0)
     async def update_status(self):
         
@@ -43,3 +92,13 @@ class ButtonBot(discord.Bot):
             status=discord.Status.online,
             activity=discord.Game(f"for {formatted_elapsed_time}")
         )
+
+    @tasks.loop(seconds=5.0)
+    async def save_data(self):
+
+        data = {
+            "last_press": self.last_press,
+            "high_scores": self.high_scores
+        }
+        with open("buttondata.json", "w") as file:
+            json.dump(data, file)
