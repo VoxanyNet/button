@@ -54,7 +54,13 @@ async def highscores(ctx: discord.ApplicationContext):
 @discord.commands.application_command(description="1% chance of kicking Caiden")
 async def kickcaiden(ctx: discord.ApplicationContext):
     
-    time_since_last_kick = time.time() - ctx.bot.last_kick_attempt
+    try:
+        last_attempt: int = ctx.bot.cooldowns[ctx.author.id]
+    except KeyError:
+        last_attempt = 0
+        pass
+
+    time_since_last_kick = time.time() - last_attempt
 
     if time_since_last_kick < 60 * 720:
 
@@ -88,7 +94,7 @@ async def kickcaiden(ctx: discord.ApplicationContext):
 
         await kick_interaction.edit_original_response(content="❌ Failed to kick Caiden...")
 
-    ctx.bot.last_kick_attempt = time.time()
+    ctx.bot.cooldowns[ctx.author.id] = time.time()
 
 
 

@@ -15,7 +15,8 @@ class ButtonBot(discord.Bot):
 
     default_button_data = {
         "last_press": time.time(),
-        "high_scores": []
+        "high_scores": [],
+        "cooldowns": {}
     }
 
     def __init__(self, button_data_directory, description=None, *args, **options):
@@ -38,6 +39,7 @@ class ButtonBot(discord.Bot):
         self.last_press: int = data["last_press"]
         self.high_scores: Dict[HighScore] = data["high_scores"]
         self.last_kick_attempt: int = 0
+        self.cooldowns = data["cooldowns"]
 
         self.add_application_command(commands.press)
         self.add_application_command(commands.highscores)
@@ -94,7 +96,8 @@ class ButtonBot(discord.Bot):
 
         data = {
             "last_press": self.last_press,
-            "high_scores": self.high_scores
+            "high_scores": self.high_scores,
+            "cooldowns": self.cooldowns
         }
 
         with open(f"{self.button_data_directory}/buttondata.json", "w") as file:
