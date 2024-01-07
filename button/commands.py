@@ -23,3 +23,5 @@ async def press(ctx: discord.ApplicationContext):
         f"<@{ctx.author.id}> pressed the button, ending the streak of **{formatted_elapsed_time}**!"
     )
 
+    ctx.bot.save_data()
+
