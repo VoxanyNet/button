@@ -85,7 +85,6 @@ class ButtonBot(discord.Bot):
 
     async def on_ready(self):
         self.update_status.start()
-        self.save_data.start()
 
     @tasks.loop(seconds=5.0)
     async def update_status(self):
