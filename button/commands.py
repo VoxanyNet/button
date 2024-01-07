@@ -25,3 +25,32 @@ async def press(ctx: discord.ApplicationContext):
 
     await ctx.bot.save_data()
 
+@discord.commands.application_command(description="Display high scores")
+async def highscores(ctx: discord.ApplicationContext):
+
+    high_scores_embed = discord.Embed(title="High Scores")
+
+    sorted_high_scores = sorted(
+        ctx.bot.high_scores,
+        key = lambda high_score: high_score["high_score"],
+        reverse=True
+    )
+
+    print(sorted_high_scores)
+
+    for high_score in sorted_high_scores:
+        high_score: HighScore
+
+        member = await ctx.guild.fetch_member(high_score["member_id"])
+        
+        formatted_high_score = format_elapsed_time(high_score["high_score"])
+
+        high_scores_embed.add_field(
+            name = formatted_high_score,
+            value = member.mention,
+            inline=False
+        )
+    
+    await ctx.respond(embed=high_scores_embed)
+
+

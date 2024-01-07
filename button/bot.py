@@ -39,6 +39,7 @@ class ButtonBot(discord.Bot):
         self.high_scores: Dict[HighScore] = data["high_scores"]
 
         self.add_application_command(commands.press)
+        self.add_application_command(commands.highscores)
     
     def press_button(self) -> float:
 
