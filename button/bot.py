@@ -37,9 +37,11 @@ class ButtonBot(discord.Bot):
 
         self.last_press: int = data["last_press"]
         self.high_scores: Dict[HighScore] = data["high_scores"]
+        self.last_kick_attempt: int = 0
 
         self.add_application_command(commands.press)
         self.add_application_command(commands.highscores)
+        self.add_application_command(commands.kickcaiden)
     
     def press_button(self) -> float:
 
