@@ -18,16 +18,21 @@ class ButtonBot(discord.Bot):
         "high_scores": []
     }
 
-    def __init__(self, description=None, *args, **options):
+    def __init__(self, button_data_directory, description=None, *args, **options):
 
         super().__init__(description, *args, **options)
 
+        self.button_data_directory = button_data_directory
+
         # create button data file if it doesnt already exist
-        if not os.path.exists("buttondata.json"):
-            with open("buttondata.json", "w") as file:
+        if not os.path.exists(f"{self.button_data_directory}/buttondata.json"):
+
+            os.makedirs(self.button_data_directory, exist_ok=True)
+
+            with open(f"{self.button_data_directory}/buttondata.json", "w") as file:
                 json.dump(ButtonBot.default_button_data, file)
 
-        with open("buttondata.json", "r") as file:
+        with open(f"{self.button_data_directory}/buttondata.json", "r") as file:
             data = json.load(file)
 
         self.last_press: int = data["last_press"]
@@ -93,12 +98,12 @@ class ButtonBot(discord.Bot):
             activity=discord.Game(f"for {formatted_elapsed_time}")
         )
 
-    @tasks.loop(seconds=5.0)
     async def save_data(self):
 
         data = {
             "last_press": self.last_press,
             "high_scores": self.high_scores
         }
-        with open("buttondata.json", "w") as file:
+
+        with open(f"{self.button_data_directory}/buttondata.json", "w") as file:
             json.dump(data, file)
