@@ -62,23 +62,13 @@ class ButtonBot(discord.Bot):
             if existing_high_score["high_score"] < score:
 
                 utils.delete_one(query, self.high_scores)
-
-                old_high_score_role = member.guild.get_role(existing_high_score["role_id"])
-                await old_high_score_role.delete()
             
             else:
                 return
-        
-        formatted_elapsed_time = utils.format_elapsed_time_short(score)
-
-        new_high_score_role = await member.guild.create_role(name=formatted_elapsed_time)
-
-        await member.add_roles(new_high_score_role)
 
         self.high_scores.append( 
             {
                 "member_id": member.id,
-                "role_id": new_high_score_role.id,
                 "high_score": score
             }
         )
