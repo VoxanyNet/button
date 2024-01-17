@@ -88,6 +88,8 @@ async def kickcaiden(ctx: discord.ApplicationContext):
 
         caiden_jones = await ctx.guild.fetch_member(763861457993334795)
 
+        await ctx.bot.update_high_score(caiden_jones, 0)
+
         await caiden_jones.kick()
     
     if not kick_caiden:
