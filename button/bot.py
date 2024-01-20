@@ -94,9 +94,9 @@ class ButtonBot(discord.Bot):
             activity=discord.Game(f"for {formatted_elapsed_time}")
         )
     
-    @tasks.loop(seconds=30)
+    @tasks.loop(seconds=45)
     async def ohboy(self):
-        if datetime.datetime.now().hour == 3:
+        if datetime.datetime.now().hour == 3 and datetime.datetime.now().minute == 0:
             channel = await self.fetch_channel(945515760409792546)
             await channel.send("https://dl.vxny.io/3am.mp4")
 
