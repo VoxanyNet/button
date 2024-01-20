@@ -2,6 +2,7 @@ import json
 import time
 import os
 from typing import Dict
+import datetime
 
 import discord
 from discord.ext import tasks
@@ -80,6 +81,7 @@ class ButtonBot(discord.Bot):
 
     async def on_ready(self):
         self.update_status.start()
+        self.ohboy.start()
 
     @tasks.loop(seconds=5.0)
     async def update_status(self):
@@ -91,6 +93,12 @@ class ButtonBot(discord.Bot):
             status=discord.Status.online,
             activity=discord.Game(f"for {formatted_elapsed_time}")
         )
+    
+    @tasks.loop(seconds=30)
+    async def ohboy(self):
+        if datetime.datetime.now().hour == 3:
+            channel = await self.fetch_channel(945515760409792546)
+            await channel.send("https://dl.vxny.io/3am.mp4")
 
     async def save_data(self):
 
