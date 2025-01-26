@@ -87,11 +87,23 @@ class ButtonBot(discord.Bot):
     async def update_status(self):
         
         elapsed_time = time.time() - self.last_press
+
+        # sneaky hack for now to get half days
+        seconds = int(seconds)
+        days, remainder = divmod(seconds, 86400)
+        hours, remainder = divmod(remainder, 3600)
+        minutes, seconds = divmod(remainder, 60)
+
         formatted_elapsed_time = format_elapsed_time_short(elapsed_time)
+
+        if hours > 12 and days > 1:
+            activity_string = f"for {days}.5 days"
+        else:
+            activity_string = f"for {formatted_elapsed_time}"
 
         await self.change_presence(
             status=discord.Status.online,
-            activity=discord.Game(f"for {formatted_elapsed_time}")
+            activity=discord.Game(activity_string)
         )
     
     @tasks.loop(seconds=45)

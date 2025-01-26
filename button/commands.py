@@ -70,7 +70,7 @@ async def kickcaiden(ctx: discord.ApplicationContext):
 
         return 
     
-    kick_caiden = random.randrange(0, 100) == 1
+    kick_caiden = random.randrange(0, 100) == 1 
 
     kick_interaction = await ctx.respond("🚨 Attempting to kick Caiden...")
 
