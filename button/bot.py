@@ -84,7 +84,7 @@ class ButtonBot(discord.Bot):
         elapsed_time = time.time() - self.last_press
 
         # sneaky hack for now to get half days
-        seconds = int(seconds)
+        seconds = int(elapsed_time)
         days, remainder = divmod(seconds, 86400)
         hours, remainder = divmod(remainder, 3600)
         minutes, seconds = divmod(remainder, 60)
