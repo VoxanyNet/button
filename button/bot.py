@@ -65,12 +65,7 @@ class ButtonBot(discord.Bot):
         
         if existing_high_score:
 
-            if existing_high_score["high_score"] < score:
-
-                utils.delete_one(query, self.high_scores)
-            
-            else:
-                return
+            utils.delete_one(query, self.high_scores)
 
         self.high_scores.append( 
             {
